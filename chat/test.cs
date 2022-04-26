@@ -7,24 +7,24 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Microsoft.Azure.WebPubSub.Common;
 using Microsoft.Azure.WebJobs.Extensions.WebPubSub;
+using Microsoft.Azure.WebPubSub.Common;
 
-namespace chat
+namespace Company.Function
 {
-    public static class message
+    public static class test
     {
-        [FunctionName("message")]
+        [FunctionName("test")]
         public static async Task Run(
-            [WebPubSubTrigger("simplechat", WebPubSubEventType.User, "message")] UserEventRequest request,
+            [WebPubSubTrigger("simplechat", WebPubSubEventType.User, "testevent")] UserEventRequest request,
             BinaryData data, WebPubSubDataType dataType,
             [WebPubSub(Hub = "simplechat")] IAsyncCollector<WebPubSubAction> actions)
         {
             Console.WriteLine("test");
-            await actions.AddAsync(WebPubSubAction.CreateSendToAllAction(
-                BinaryData.FromString($"[{request.ConnectionContext.UserId}] {data.ToString()}"),
-                dataType));
-
+            Console.WriteLine(dataType);
+            
+            //await actions.AddAsync(WebPubSubAction.CreateSendToAllAction(request.Data, dataType));
+            await actions.AddAsync(WebPubSubAction.CreateSendToGroupAction("testGroup", request.Data, dataType));
         }
     }
 }

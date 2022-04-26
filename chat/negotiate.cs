@@ -20,7 +20,12 @@ namespace chat
             ILogger log)
         {
             log.LogInformation("Connecting...");
-            return connection;
+            
+            Validate_JWT jwt = new Validate_JWT(req);
+            if(jwt.isValid)
+                return connection;
+            else
+                return null;
         }
     }
 }
