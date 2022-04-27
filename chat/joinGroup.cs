@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Microsoft.Azure.WebJobs.Extensions.WebPubSub;
 using Microsoft.Azure.WebPubSub.Common;
 using Newtonsoft.Json.Linq;
+using chat.Repositories;
 
 namespace Company.Function
 {
@@ -21,30 +22,17 @@ namespace Company.Function
             BinaryData data, WebPubSubDataType dataType,
             [WebPubSub(Hub = "simplechat")] IAsyncCollector<WebPubSubAction> actions)
         {
-            Console.WriteLine("test");
-            Console.WriteLine(dataType);
+
             string json = data.ToString();
-            Console.WriteLine(json);
 
-            
-
+            //add error handling
             dynamic json2 = JObject.Parse(json);
-            Console.WriteLine(json2.username);
             string username = json2.username;
             string group = json2.group;
-            Console.WriteLine(username);
-            Console.WriteLine(group);
-            /*if ((json2.username is string) && (json2.group is string))
-            {
-                username = json2.username;
-                group = json2.group;
-                Console.WriteLine("Adding to grourp");*/
-                await actions.AddAsync(WebPubSubAction.CreateAddUserToGroupAction(username, group));
-            /*} 
-            else
-            {
-                Console.WriteLine("did not add to grourp");
-            }*/
+
+            await actions.AddAsync(WebPubSubAction.CreateAddUserToGroupAction(username, group));
+
+            UserRepository.AddGroupToUser(username, group);
 
         }
     }

@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        String username = AuthTokenService.getPayloadData("username");
+        final String username = AuthTokenService.getPayloadData("username");
         Log.i("error", username);
         ChatService.getConnection(getApplicationContext(), username, new ServerCalback() {
             @Override
@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onOpen(ServerHandshake handshakedata) {
                             Log.e("faaf", "connection opened");
+                            ChatService.rejoinGroups(getApplicationContext(), username);
                         }
 
                         @Override

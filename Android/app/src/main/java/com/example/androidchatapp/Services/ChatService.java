@@ -61,4 +61,21 @@ public class ChatService {
             callback.onSucess(ChatService.pubSubConnectionURL);
         }
     }
+
+    public static void rejoinGroups(final Context context, final String username){
+        final String rejoinGroupsURL = context.getApplicationContext().getString(R.string.ChatServiceBaseURL) + context.getApplicationContext().getString(R.string.rejoin) + "?username=" + username;
+        StringRequest request = new StringRequest(StringRequest.Method.POST, rejoinGroupsURL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("info", "rejoined groups");
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("error", "failed to rejoin groups");
+            }
+        });
+
+        Volley.newRequestQueue(context).add(request);
+    }
 }
