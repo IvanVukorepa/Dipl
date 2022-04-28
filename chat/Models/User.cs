@@ -14,14 +14,10 @@ namespace chat.Models
         {
             Username = username;
             Group = group;
-            testparam = "asdas";
-            testparam2 = "artgeegr";
         }
 
         public string Username {get; set;}
         public string Group {get;set;}
-        public string testparam;
-        public string testparam2;
 
     }
 }

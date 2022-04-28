@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".main_screen.MainActivity"></activity>
+        <activity android:name=".chat_screen.ChatActivity" />
         <activity android:name=".registration_screen.RegistrationActivity" />
         <activity android:name=".MainActivity" />
         <activity
