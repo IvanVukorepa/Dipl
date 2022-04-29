@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.androidchatapp.R;
@@ -12,6 +13,7 @@ import com.example.androidchatapp.Services.AuthTokenService;
 import com.example.androidchatapp.Services.ChatService;
 import com.example.androidchatapp.Services.ServerCalback;
 import com.example.androidchatapp.Services.WebSocketSingleton;
+import com.example.androidchatapp.main_screen.ChatsListAdapter;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
@@ -28,28 +30,35 @@ public class ChatActivity extends AppCompatActivity {
     URI uri;
     //WebSocketClient client;
     Button testBtn, joinBtn;
+    EditText newMessageET;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         testBtn = (Button) findViewById(R.id.button);
         joinBtn = (Button) findViewById(R.id.button2);
+        newMessageET = (EditText) findViewById(R.id.editTextNewMessage);
 
         testBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.e("info", "send message clicked");
                 JSONObject test = new JSONObject();
                 try {
                     test.put("type", "event");
                     test.put("event", "testevent");
                     //test.put("ackId", 1);
                     test.put("dataType", "text");
-                    test.put("data", "pozdrav, test custom event");
+                    test.put("data", "[" + ChatService.chatName + "]" + newMessageET.getText().toString());
                 } catch (JSONException e){
-
+                    Log.e("info", "JSON exception");
                 }
-                if (WebSocketSingleton.client.isOpen())
+                if (WebSocketSingleton.client.isOpen()){
+                    Log.e("info", "sending message");
                     WebSocketSingleton.client.send(test.toString());
+                } else{
+                    Log.e("info", "client not open");
+                }
             }
         });
 

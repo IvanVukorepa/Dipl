@@ -18,7 +18,9 @@ public class WebSocketSingleton {
     private static URI uri;
 
     public static WebSocketClient getSocketClient(final Context context, final String url, final String username){
+        Log.e("afafs", "getSocketClient");
         if (client != null && client.isOpen()){
+            Log.e("afafs", "getSocketClient");
             return client;
         }
         try{
@@ -39,7 +41,7 @@ public class WebSocketSingleton {
 
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
-
+                    Log.e("faaf", "client closed due to" + reason);
                 }
 
                 @Override
