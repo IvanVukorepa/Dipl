@@ -12,6 +12,8 @@ import com.example.androidchatapp.R;
 import com.example.androidchatapp.Services.AuthTokenService;
 import com.example.androidchatapp.Services.ChatService;
 import com.example.androidchatapp.Services.ServerCalback;
+import com.example.androidchatapp.Services.TestService;
+import com.example.androidchatapp.Services.WebPubSubConService;
 import com.example.androidchatapp.Services.WebSocketSingleton;
 import com.example.androidchatapp.chat_screen.ChatActivity;
 
@@ -42,12 +44,18 @@ public class MainActivity extends AppCompatActivity {
 
         final String username = AuthTokenService.getPayloadData("username");
         Log.i("error", username);
-        ChatService.getConnection(getApplicationContext(), username, new ServerCalback() {
+        /*ChatService.getConnection(getApplicationContext(), username, new ServerCalback() {
             @Override
             public void onSucess(String url) {
                 Log.e("url", url);
                 WebSocketSingleton.getSocketClient(getApplicationContext(), url, username);
             }
-        });
+        });*/
+        ChatService.rejoinGroups(getApplicationContext(), username);
+
+        Intent serviceIntent = new Intent(this, WebPubSubConService.class);
+        serviceIntent.putExtra("message", "");
+        Log.e("service", "intent start service WebPubSubConService");
+        startService(serviceIntent);
     }
 }

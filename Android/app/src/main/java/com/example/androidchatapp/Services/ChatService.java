@@ -2,6 +2,7 @@ package com.example.androidchatapp.Services;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.BaseAdapter;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -89,7 +90,7 @@ public class ChatService {
         Volley.newRequestQueue(context).add(request);
     }
 
-    public static void getAllGroupsForUser(final Context context, final String username, final ChatsListAdapter adapter){
+    public static void getAllGroupsForUser(final Context context, final String username, final BaseAdapter adapter){
         final String url = context.getApplicationContext().getString(R.string.ChatServiceBaseURL) + context.getApplicationContext().getString(R.string.getAllGroupsUser) + "?username=" + username;
         JsonArrayRequest getGroups = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override

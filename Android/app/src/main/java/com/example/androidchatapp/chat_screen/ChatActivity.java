@@ -1,5 +1,6 @@
 package com.example.androidchatapp.chat_screen;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,9 +13,13 @@ import com.example.androidchatapp.R;
 import com.example.androidchatapp.Services.AuthTokenService;
 import com.example.androidchatapp.Services.ChatService;
 import com.example.androidchatapp.Services.ServerCalback;
+import com.example.androidchatapp.Services.WebPubSubConService;
 import com.example.androidchatapp.Services.WebSocketSingleton;
 import com.example.androidchatapp.main_screen.ChatsListAdapter;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -53,12 +58,17 @@ public class ChatActivity extends AppCompatActivity {
                 } catch (JSONException e){
                     Log.e("info", "JSON exception");
                 }
-                if (WebSocketSingleton.client.isOpen()){
+
+                Intent serviceIntent = new Intent(getApplicationContext(), WebPubSubConService.class);
+                serviceIntent.putExtra("message", test.toString());
+                Log.e("service", "intent start service WebPubSubConService");
+                startService(serviceIntent);
+                /*if (WebSocketSingleton.client.isOpen()){
                     Log.e("info", "sending message");
                     WebSocketSingleton.client.send(test.toString());
                 } else{
                     Log.e("info", "client not open");
-                }
+                }*/
             }
         });
 
@@ -80,10 +90,26 @@ public class ChatActivity extends AppCompatActivity {
                 } catch(JSONException e){
 
                 }
-                if (WebSocketSingleton.client.isOpen())
-                    WebSocketSingleton.client.send(test.toString());
+                /*if (WebSocketSingleton.client.isOpen())
+                    WebSocketSingleton.client.send(test.toString());*/
+                Intent serviceIntent = new Intent(getApplicationContext(), WebPubSubConService.class);
+                serviceIntent.putExtra("message", test.toString());
+                Log.e("service", "intent start service WebPubSubConService");
+                startService(serviceIntent);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
     }
 
     @Override
@@ -91,5 +117,10 @@ public class ChatActivity extends AppCompatActivity {
         super.onDestroy();
         if (WebSocketSingleton.client != null && WebSocketSingleton.client.isOpen())
             WebSocketSingleton.client.close();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void test(String input){
+        Toast.makeText(getApplicationContext(), input,Toast.LENGTH_LONG).show();
     }
 }
