@@ -12,7 +12,11 @@ import android.widget.Toast;
 import com.example.androidchatapp.R;
 import com.example.androidchatapp.Services.AuthTokenService;
 import com.example.androidchatapp.Services.ChatService;
+import com.example.androidchatapp.Services.EventBusMessages;
+import com.example.androidchatapp.Services.ReceiveMessageEvent;
+import com.example.androidchatapp.Services.SendMessageEvent;
 import com.example.androidchatapp.Services.ServerCalback;
+import com.example.androidchatapp.Services.TestService;
 import com.example.androidchatapp.Services.WebPubSubConService;
 import com.example.androidchatapp.Services.WebSocketSingleton;
 import com.example.androidchatapp.main_screen.ChatsListAdapter;
@@ -59,7 +63,7 @@ public class ChatActivity extends AppCompatActivity {
                     Log.e("info", "JSON exception");
                 }
 
-                Intent serviceIntent = new Intent(getApplicationContext(), WebPubSubConService.class);
+                Intent serviceIntent = new Intent(getApplicationContext(), TestService.class);
                 serviceIntent.putExtra("message", test.toString());
                 Log.e("service", "intent start service WebPubSubConService");
                 startService(serviceIntent);
@@ -69,6 +73,9 @@ public class ChatActivity extends AppCompatActivity {
                 } else{
                     Log.e("info", "client not open");
                 }*/
+                //SendMessageEvent message = new SendMessageEvent(test.toString());
+                //EventBus.getDefault().post(message);
+
             }
         });
 
@@ -92,10 +99,10 @@ public class ChatActivity extends AppCompatActivity {
                 }
                 /*if (WebSocketSingleton.client.isOpen())
                     WebSocketSingleton.client.send(test.toString());*/
-                Intent serviceIntent = new Intent(getApplicationContext(), WebPubSubConService.class);
+                /*Intent serviceIntent = new Intent(getApplicationContext(), WebPubSubConService.class);
                 serviceIntent.putExtra("message", test.toString());
                 Log.e("service", "intent start service WebPubSubConService");
-                startService(serviceIntent);
+                startService(serviceIntent);*/
             }
         });
     }

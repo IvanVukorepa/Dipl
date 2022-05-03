@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         });*/
         ChatService.rejoinGroups(getApplicationContext(), username);
 
-        Intent serviceIntent = new Intent(this, WebPubSubConService.class);
+        Intent serviceIntent = new Intent(this, TestService.class);
         serviceIntent.putExtra("message", "");
         Log.e("service", "intent start service WebPubSubConService");
         startService(serviceIntent);

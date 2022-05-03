@@ -1,5 +1,7 @@
 package com.example.androidchatapp.Services;
 
+import android.content.Context;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.google.common.io.BaseEncoding;
@@ -8,7 +10,7 @@ public class AuthTokenService {
     private static JSONObject payloadJson, headerJson, signatureJson;
     private static String token;
 
-    public static boolean decodeToken(String token){
+    public static boolean decodeToken(String token, Context context){
         String[] parts = token.split("\\."); // split out the "parts" (header, payload and signature)
 
         String tokenHeader = new String (BaseEncoding.base64Url().decode(parts[0]));
@@ -24,6 +26,9 @@ public class AuthTokenService {
             return false;
         }
         AuthTokenService.setToken(token);
+        MyPreferences preferences = new MyPreferences(context);
+        preferences.setString("AuthToken", token);
+        preferences.setString("Username", getPayloadData("username"));
         return true;
     }
 
