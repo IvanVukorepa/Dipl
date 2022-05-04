@@ -29,7 +29,7 @@ public class UserService {
                 String token = response;
                 Log.i("token", token);
 
-                if (AuthTokenService.decodeToken(token)){
+                if (AuthTokenService.decodeToken(token, context)){
                     Intent intent;
                     intent = new Intent(context.getApplicationContext(), MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
