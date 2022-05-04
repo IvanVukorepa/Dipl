@@ -11,10 +11,7 @@ import android.widget.ListView;
 import com.example.androidchatapp.R;
 import com.example.androidchatapp.Services.AuthTokenService;
 import com.example.androidchatapp.Services.ChatService;
-import com.example.androidchatapp.Services.ServerCalback;
 import com.example.androidchatapp.Services.TestService;
-import com.example.androidchatapp.Services.WebPubSubConService;
-import com.example.androidchatapp.Services.WebSocketSingleton;
 import com.example.androidchatapp.chat_screen.ChatActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,13 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
         final String username = AuthTokenService.getPayloadData("username");
         Log.i("error", username);
-        /*ChatService.getConnection(getApplicationContext(), username, new ServerCalback() {
-            @Override
-            public void onSucess(String url) {
-                Log.e("url", url);
-                WebSocketSingleton.getSocketClient(getApplicationContext(), url, username);
-            }
-        });*/
+
+        // should probably be in Test/WebPubSub Service code
         ChatService.rejoinGroups(getApplicationContext(), username);
 
         Intent serviceIntent = new Intent(this, TestService.class);

@@ -34,15 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         login_btn = (Button) findViewById(R.id.login_btn);
         password_tv = (TextView) findViewById(R.id.password_tv);
         username_tv = (TextView) findViewById(R.id.user_tv);
-/*
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(LoginActivity.this, new String[]{Manifest.permission.WRITE_CALENDAR}, 1);
-        }
 
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(LoginActivity.this, new String[]{Manifest.permission.READ_CALENDAR}, 1);
-        }
-*/
         register_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,9 +56,6 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         createNotificationChannel();
-        /*Intent serviceIntent = new Intent(this, TestService.class);
-        Log.e("service", "intent start service");
-        startService(serviceIntent);*/
     }
 
     private boolean CheckUsernameAndPasswordFilled(){

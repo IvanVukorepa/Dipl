@@ -81,7 +81,6 @@ public class TestService extends Service {
                             @Override
                             public void onSucess(String url) {
                                 Log.e("url", url);
-                                //WebSocketSingleton.getSocketClient(getApplicationContext(), url, username);
                                 try{
                                     uri = new URI(url);
                                     HashMap<String, String> headers = new HashMap<>();
