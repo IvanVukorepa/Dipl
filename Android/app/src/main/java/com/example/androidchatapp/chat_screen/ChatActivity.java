@@ -7,12 +7,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.androidchatapp.R;
 import com.example.androidchatapp.Services.AuthTokenService;
 import com.example.androidchatapp.Services.ChatService;
+import com.example.androidchatapp.Services.Message;
+import com.example.androidchatapp.Services.PubSubData;
 import com.example.androidchatapp.Services.TestService;
+import com.example.androidchatapp.main_screen.ChatListDataStorage;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -21,10 +27,16 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
+import java.util.List;
+
 public class ChatActivity extends AppCompatActivity {
 
     Button testBtn, joinBtn;
     EditText newMessageET;
+    ListView chatMessagesLV;
+    chatAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +44,14 @@ public class ChatActivity extends AppCompatActivity {
         testBtn = (Button) findViewById(R.id.button);
         joinBtn = (Button) findViewById(R.id.button2);
         newMessageET = (EditText) findViewById(R.id.editTextNewMessage);
+        chatMessagesLV = (ListView) findViewById(R.id.chatMessagesList);
+
+        adapter = new chatAdapter(getApplicationContext());
+        chatMessagesLV.setAdapter(adapter);
+
+        Intent intent = getIntent();
+        String chatName = intent.getStringExtra("chatName");
+        ChatService.chatName = chatName;
 
         testBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,6 +62,7 @@ public class ChatActivity extends AppCompatActivity {
                     test.put("type", "event");
                     test.put("event", "testevent");
                     //test.put("ackId", 1);
+                    //change data to json and send group and message
                     test.put("dataType", "text");
                     test.put("data", "[" + ChatService.chatName + "]" + newMessageET.getText().toString());
                 } catch (JSONException e){
@@ -92,11 +113,20 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        ChatDataStorage.messages.clear();
+        ChatService.chatName = "";
         super.onDestroy();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void test(String input){
-        Toast.makeText(getApplicationContext(), input,Toast.LENGTH_LONG).show();
+        //handle event connected
+        Gson gson = new Gson();
+        Type type = new TypeToken<PubSubData>(){}.getType();
+        PubSubData data = gson.fromJson(input, type);
+        Log.e("test", data.data.user + " " + data.data.message);
+
+        ChatDataStorage.addMessage(getApplicationContext(), data, adapter);
+        Toast.makeText(getApplicationContext(), data.data.message, Toast.LENGTH_SHORT).show();
     }
 }

@@ -1,6 +1,9 @@
 package com.example.androidchatapp.Services;
 
+import android.app.Notification;
 import android.content.Context;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.widget.BaseAdapter;
 import android.widget.Toast;
@@ -25,6 +28,7 @@ import java.util.List;
 public class ChatService {
 
     public static String chatName = "";
+    public static int notificationId = 0;
 
     public static void rejoinGroups(final Context context, final String username){
         final String rejoinGroupsURL = context.getApplicationContext().getString(R.string.ChatServiceBaseURL) + context.getApplicationContext().getString(R.string.rejoin) + "?username=" + username;
@@ -64,5 +68,19 @@ public class ChatService {
         });
 
         Volley.newRequestQueue(context).add(getGroups);
+    }
+
+    public static void showNotification(Context context){
+        Log.i("service", "show notification");
+        String CHANNEL_ID = context.getString(R.string.channel_name);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("Notification")
+                .setContentText("Notification test")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setDefaults(Notification.DEFAULT_VIBRATE);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(notificationId++, builder.build());
     }
 }

@@ -33,8 +33,9 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String chatName = ChatListDataStorage.chats.get(i);
                 ChatService.chatName = chatName;
-
+                //add chatname to intent and set it in next activity, on destroy remove name and clear datastorage
                 Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                intent.putExtra("chatName", chatName);
                 startActivity(intent);
             }
         });

@@ -11,6 +11,8 @@ using Microsoft.Azure.WebJobs.Extensions.WebPubSub;
 using Microsoft.Azure.WebPubSub.Common;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using chat.Models;
+using Newtonsoft.Json.Linq;
 
 namespace Company.Function
 {
@@ -33,12 +35,18 @@ namespace Company.Function
                 return;
             }
             String group = receivedDataArr[1];
+            String userId = request.ConnectionContext.UserId;
+
             String message = receivedDataArr[2];
 
             Console.WriteLine(group);
+            MessageData messageData = new MessageData(userId, message);
+            string messageDatajson = JsonConvert.SerializeObject(messageData);
 
             //await actions.AddAsync(WebPubSubAction.CreateSendToAllAction(request.Data, dataType));
-            await actions.AddAsync(WebPubSubAction.CreateSendToGroupAction(group, message, dataType));
+            await actions.AddAsync(WebPubSubAction.CreateSendToGroupAction(group, messageDatajson, WebPubSubDataType.Json));
+            
+            
         }
     }
 }
