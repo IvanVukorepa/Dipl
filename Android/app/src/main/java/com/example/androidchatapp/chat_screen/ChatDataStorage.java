@@ -41,8 +41,5 @@ public class ChatDataStorage {
             //show notification as we are in a different chat
             ChatService.showNotification(context);
         }
-        MessagesDataSource msgDataSource = new MessagesDataSource(context);
-        msgDataSource.open();
-        msgDataSource.addMessageToDB(data.data.user, ChatService.chatName, data.data.message);
     }
 }

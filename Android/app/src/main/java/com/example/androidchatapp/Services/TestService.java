@@ -21,7 +21,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.androidchatapp.DB.MessagesDataSource;
 import com.example.androidchatapp.R;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -31,6 +34,7 @@ import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -74,8 +78,8 @@ public class TestService extends Service {
                 new Runnable() {
                     @Override
                     public void run() {
-                        String authToken = getToken(getApplicationContext());
-                        String username = getUsername(getApplicationContext());
+                        final String authToken = getToken(getApplicationContext());
+                        final String username = getUsername(getApplicationContext());
                         Log.e("test", authToken + " " + username);
                         getConnection(getApplicationContext(), username, authToken, new ServerCalback() {
                             @Override
@@ -89,17 +93,13 @@ public class TestService extends Service {
                                         @Override
                                         public void onOpen(ServerHandshake handshakedata) {
                                             Log.e("faaf", "connection opened");
+                                            ChatService.rejoinGroups(getApplicationContext(), username);
                                         }
 
                                         @Override
                                         public void onMessage(String message) {
                                             Log.e("faaf", "message" + message + "received");
-                                            if (EventBus.getDefault().hasSubscriberForEvent(String.class)){
-                                                EventBus.getDefault().post(message);
-                                                //showNotification(getApplicationContext());
-                                            } else{
-                                                showNotification(getApplicationContext());
-                                            }
+                                            handleMessage(message, getApplicationContext());
                                         }
 
                                         @Override
@@ -207,5 +207,22 @@ public class TestService extends Service {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(notificationId++, builder.build());
+    }
+
+    public void handleMessage(String message, Context context){
+        Gson gson = new Gson();
+        Type type = new TypeToken<PubSubData>(){}.getType();
+        PubSubData data = gson.fromJson(message, type);
+
+        if (EventBus.getDefault().hasSubscriberForEvent(PubSubData.class)){
+            EventBus.getDefault().post(data);
+            //showNotification(getApplicationContext());
+        } else{
+            showNotification(getApplicationContext());
+        }
+
+        MessagesDataSource msgDataSource = new MessagesDataSource(context);
+        msgDataSource.open();
+        msgDataSource.addMessageToDB(data.data.user, data.group, data.data.message);
     }
 }

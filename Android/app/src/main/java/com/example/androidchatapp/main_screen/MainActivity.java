@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("error", username);
 
         // should probably be in Test/WebPubSub Service code
-        ChatService.rejoinGroups(getApplicationContext(), username);
+        //ChatService.rejoinGroups(getApplicationContext(), username);
 
         Intent serviceIntent = new Intent(this, TestService.class);
         serviceIntent.putExtra("message", "");

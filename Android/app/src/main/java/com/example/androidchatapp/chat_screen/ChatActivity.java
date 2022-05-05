@@ -121,11 +121,11 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void test(String input){
+    public void test(PubSubData data){
         //handle event connected
-        Gson gson = new Gson();
+        /*Gson gson = new Gson();
         Type type = new TypeToken<PubSubData>(){}.getType();
-        PubSubData data = gson.fromJson(input, type);
+        PubSubData data = gson.fromJson(input, type);*/
         Log.e("test", data.data.user + " " + data.data.message);
 
         ChatDataStorage.addMessage(getApplicationContext(), data, adapter);
