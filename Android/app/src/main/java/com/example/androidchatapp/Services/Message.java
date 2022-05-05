@@ -8,4 +8,9 @@ public class Message {
         user = "test";
         message = input;
     }
+
+    public Message(String User, String Content){
+        user = User;
+        message = Content;
+    }
 }

@@ -53,6 +53,8 @@ public class ChatActivity extends AppCompatActivity {
         String chatName = intent.getStringExtra("chatName");
         ChatService.chatName = chatName;
 
+        ChatDataStorage.fillData(getApplicationContext(), adapter, chatName);
+
         testBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

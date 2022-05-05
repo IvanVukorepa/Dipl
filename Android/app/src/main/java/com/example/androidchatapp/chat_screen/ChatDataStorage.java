@@ -3,6 +3,8 @@ package com.example.androidchatapp.chat_screen;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.androidchatapp.DB.MessageDatabse;
+import com.example.androidchatapp.DB.MessagesDataSource;
 import com.example.androidchatapp.Services.ChatService;
 import com.example.androidchatapp.Services.Message;
 import com.example.androidchatapp.Services.PubSubData;
@@ -13,8 +15,18 @@ public class ChatDataStorage {
 
     public static ArrayList<Message> messages = new ArrayList<>();
 
-    public static void fillData(final Context context, final chatAdapter adapter){
+    public static void fillData(final Context context, final chatAdapter adapter, String chatName){
+        MessagesDataSource msgDataSource = new MessagesDataSource(context);
 
+        msgDataSource.open();
+        ArrayList<MessageDatabse> messagesDB = msgDataSource.getAllMessagesForChat(chatName);
+
+        for (MessageDatabse m: messagesDB) {
+            Log.e("all messages", m.getChatName() + " " + m.getUsername() + " " + m.getMessageContent());
+            Message message = new Message(m.getUsername(), m.getMessageContent());
+            messages.add(message);
+        }
+        adapter.notifyDataSetChanged();
     }
 
     public static void addMessage(Context context, final PubSubData data, chatAdapter adapter){
@@ -29,5 +41,8 @@ public class ChatDataStorage {
             //show notification as we are in a different chat
             ChatService.showNotification(context);
         }
+        MessagesDataSource msgDataSource = new MessagesDataSource(context);
+        msgDataSource.open();
+        msgDataSource.addMessageToDB(data.data.user, ChatService.chatName, data.data.message);
     }
 }
