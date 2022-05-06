@@ -213,7 +213,7 @@ public class TestService extends Service {
         Gson gson = new Gson();
         Type type = new TypeToken<PubSubData>(){}.getType();
         PubSubData data = gson.fromJson(message, type);
-        if (data.event.equals("connected")){
+        if (data.event != null && data.event.equals("connected")){
             Log.e("event", "connected to pubsub");
             return;
         }

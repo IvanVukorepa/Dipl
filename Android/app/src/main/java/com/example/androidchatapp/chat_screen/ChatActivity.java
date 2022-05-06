@@ -55,6 +55,8 @@ public class ChatActivity extends AppCompatActivity {
 
         ChatDataStorage.fillData(getApplicationContext(), adapter, chatName);
 
+        chatMessagesLV.smoothScrollToPosition(ChatDataStorage.messages.size());
+
         testBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
