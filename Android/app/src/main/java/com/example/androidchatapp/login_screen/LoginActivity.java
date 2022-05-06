@@ -17,9 +17,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.androidchatapp.R;
+import com.example.androidchatapp.Services.AuthTokenService;
+import com.example.androidchatapp.Services.MyPreferences;
 import com.example.androidchatapp.Services.TestService;
 import com.example.androidchatapp.Services.UserService;
+import com.example.androidchatapp.main_screen.MainActivity;
 import com.example.androidchatapp.registration_screen.RegistrationActivity;
+
+import org.greenrobot.eventbus.Subscribe;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -34,6 +39,8 @@ public class LoginActivity extends AppCompatActivity {
         login_btn = (Button) findViewById(R.id.login_btn);
         password_tv = (TextView) findViewById(R.id.password_tv);
         username_tv = (TextView) findViewById(R.id.user_tv);
+
+        startMainIfLoggedIn();
 
         register_tv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +63,22 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         createNotificationChannel();
+    }
+
+    private void startMainIfLoggedIn() {
+        MyPreferences preferences = new MyPreferences(getApplicationContext());
+
+        String username = preferences.getString("Username");
+        String token = preferences.getString("AuthToken");
+
+        if (!username.isEmpty() && !token.isEmpty()){
+            if (AuthTokenService.decodeToken(token, getApplicationContext())){
+                Intent intent;
+                intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(intent);
+            }
+        }
     }
 
     private boolean CheckUsernameAndPasswordFilled(){
