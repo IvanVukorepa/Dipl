@@ -22,7 +22,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.androidchatapp.DB.MessagesDataSource;
+import com.example.androidchatapp.Models.UserGroup;
 import com.example.androidchatapp.R;
+import com.example.androidchatapp.main_screen.ChatListDataStorage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -228,5 +230,6 @@ public class TestService extends Service {
         MessagesDataSource msgDataSource = new MessagesDataSource(context);
         msgDataSource.open();
         msgDataSource.addMessageToDB(data.data.user, data.group, data.data.message);
+        msgDataSource.close();
     }
 }

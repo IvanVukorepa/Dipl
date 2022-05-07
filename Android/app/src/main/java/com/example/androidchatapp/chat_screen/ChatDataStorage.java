@@ -22,6 +22,7 @@ public class ChatDataStorage {
 
         msgDataSource.open();
         ArrayList<MessageDatabse> messagesDB = msgDataSource.getAllMessagesForChat(chatName);
+        msgDataSource.close();
 
         for (MessageDatabse m: messagesDB) {
             Log.e("all messages", m.getChatName() + " " + m.getUsername() + " " + m.getMessageContent());

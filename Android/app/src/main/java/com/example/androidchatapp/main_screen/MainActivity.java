@@ -12,12 +12,19 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.example.androidchatapp.Models.UserGroup;
 import com.example.androidchatapp.R;
 import com.example.androidchatapp.Services.AuthTokenService;
 import com.example.androidchatapp.Services.ChatService;
+import com.example.androidchatapp.Services.PubSubData;
 import com.example.androidchatapp.Services.TestService;
 import com.example.androidchatapp.Services.UserService;
 import com.example.androidchatapp.chat_screen.ChatActivity;
+import com.example.androidchatapp.chat_screen.ChatDataStorage;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -32,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
         listView = (ListView) findViewById(R.id.mainScreenList);
         adapter = new ChatsListAdapter(getApplicationContext());
-        ChatListDataStorage.fillData(getApplicationContext(), adapter);
-        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -57,6 +62,14 @@ public class MainActivity extends AppCompatActivity {
         serviceIntent.putExtra("message", "");
         Log.e("service", "intent start service WebPubSubConService");
         startService(serviceIntent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        ChatListDataStorage.fillData(getApplicationContext(), adapter);
+        listView.setAdapter(adapter);
     }
 
     @Override
@@ -93,5 +106,38 @@ public class MainActivity extends AppCompatActivity {
         });
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        EventBus.getDefault().register(this);
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void test(PubSubData data){
+        Log.e("test", data.data.user + " " + data.data.message);
+
+        if (!groupExists(data.group)){
+            UserGroup ug = new UserGroup(AuthTokenService.getPayloadData("username"), data.group, data.data.user);
+            ChatListDataStorage.allChats.add(ug);
+            adapter.notifyDataSetChanged();
+        }
+        ChatService.showNotification(getApplicationContext());
+    }
+
+    private boolean groupExists(String group) {
+        for (UserGroup ug: ChatListDataStorage.allChats) {
+            if (ug.group.equals(group))
+                return true;
+        }
+        return false;
     }
 }
