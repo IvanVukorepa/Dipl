@@ -54,12 +54,6 @@ public class ChatActivity extends AppCompatActivity {
         int userGroupPosition = intent.getIntExtra("userGroupPosition", -1);
 
         ChatService.chat = ChatListDataStorage.chats.get(userGroupPosition);
-        Log.e("asdadsada", "size " + String.valueOf(ChatListDataStorage.chats.size()));
-        Log.e("asdaasadasddsada", "chatname " + ChatListDataStorage.chats.get(0).chatName);
-        Log.e("asdagregredsada", "group " + ChatListDataStorage.chats.get(0).group);
-        ChatDataStorage.fillData(getApplicationContext(), adapter, ChatService.chat.group);
-
-        chatMessagesLV.smoothScrollToPosition(ChatDataStorage.messages.size());
 
         testBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,6 +107,8 @@ public class ChatActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         EventBus.getDefault().register(this);
+        ChatDataStorage.fillData(getApplicationContext(), adapter, ChatService.chat.group);
+        chatMessagesLV.smoothScrollToPosition(ChatDataStorage.messages.size());
     }
 
     @Override
