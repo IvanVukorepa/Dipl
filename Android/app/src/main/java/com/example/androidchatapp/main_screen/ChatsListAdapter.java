@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.androidchatapp.Models.UserGroup;
 import com.example.androidchatapp.R;
 import com.squareup.picasso.Picasso;
 
@@ -53,7 +54,7 @@ public class ChatsListAdapter extends BaseAdapter implements Filterable {
 
         final TextView ChatName = (TextView) view.findViewById(R.id.ChatName);
         ImageView imageTmb = (ImageView) view.findViewById(R.id.image_tmb);
-        final String chatInstance = ChatListDataStorage.chats.get(i);
+        final String chatInstance = ChatListDataStorage.chats.get(i).chatName;
 
         ChatName.setText(chatInstance);
         //Picasso.get().load(myContext.getString(R.string.baseURL) + sport.getImageUrl()).into(imageTmb);
@@ -67,14 +68,14 @@ public class ChatsListAdapter extends BaseAdapter implements Filterable {
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
                 FilterResults results = new FilterResults();
-                ArrayList<String> filteredChats = new ArrayList<>();
+                ArrayList<UserGroup> filteredChats = new ArrayList<>();
 
                 String stringToCheck = charSequence.toString().toLowerCase();
 
 
-                for (String s: ChatListDataStorage.allChats) {
-                    if (s.toLowerCase().startsWith(stringToCheck)){
-                        filteredChats.add(s);
+                for (UserGroup ug: ChatListDataStorage.allChats) {
+                    if (ug.chatName.toLowerCase().startsWith(stringToCheck)){
+                        filteredChats.add(ug);
                     }
                 }
 
@@ -89,7 +90,7 @@ public class ChatsListAdapter extends BaseAdapter implements Filterable {
                 if (charSequence.equals("")){
                     ChatListDataStorage.chats = ChatListDataStorage.allChats;
                 } else {
-                    ChatListDataStorage.chats = (ArrayList<String>) filterResults.values;
+                    ChatListDataStorage.chats = (ArrayList<UserGroup>) filterResults.values;
                 }
                 notifyDataSetChanged();
             }

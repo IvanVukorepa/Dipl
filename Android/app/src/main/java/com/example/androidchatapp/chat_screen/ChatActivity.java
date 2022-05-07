@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.androidchatapp.Models.UserGroup;
 import com.example.androidchatapp.R;
 import com.example.androidchatapp.Services.AuthTokenService;
 import com.example.androidchatapp.Services.ChatService;
@@ -50,10 +51,13 @@ public class ChatActivity extends AppCompatActivity {
         chatMessagesLV.setAdapter(adapter);
 
         Intent intent = getIntent();
-        String chatName = intent.getStringExtra("chatName");
-        ChatService.chatName = chatName;
+        int userGroupPosition = intent.getIntExtra("userGroupPosition", -1);
 
-        ChatDataStorage.fillData(getApplicationContext(), adapter, chatName);
+        ChatService.chat = ChatListDataStorage.chats.get(userGroupPosition);
+        Log.e("asdadsada", "size " + String.valueOf(ChatListDataStorage.chats.size()));
+        Log.e("asdaasadasddsada", "chatname " + ChatListDataStorage.chats.get(0).chatName);
+        Log.e("asdagregredsada", "group " + ChatListDataStorage.chats.get(0).group);
+        ChatDataStorage.fillData(getApplicationContext(), adapter, ChatService.chat.group);
 
         chatMessagesLV.smoothScrollToPosition(ChatDataStorage.messages.size());
 
@@ -68,7 +72,7 @@ public class ChatActivity extends AppCompatActivity {
                     //test.put("ackId", 1);
                     //change data to json and send group and message
                     test.put("dataType", "text");
-                    test.put("data", "[" + ChatService.chatName + "]" + newMessageET.getText().toString());
+                    test.put("data", "[" + ChatService.chat.group + "]" + newMessageET.getText().toString());
                 } catch (JSONException e){
                     Log.e("info", "JSON exception");
                 }
@@ -101,6 +105,8 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+
+        ChatService.createChatIfNotExists(getApplicationContext(), AuthTokenService.getPayloadData("username"), ChatService.chat.chatName);
     }
 
     @Override
@@ -118,7 +124,8 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         ChatDataStorage.messages.clear();
-        ChatService.chatName = "";
+        ChatService.chat = null;
+
         super.onDestroy();
     }
 

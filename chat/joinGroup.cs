@@ -32,7 +32,7 @@ namespace Company.Function
 
             await actions.AddAsync(WebPubSubAction.CreateAddUserToGroupAction(username, group));
 
-            UserRepository.AddGroupToUser(username, group);
+            UserRepository.AddGroupToUser(username, group, group);
 
         }
     }

@@ -22,11 +22,7 @@ namespace Company.Function
         {
             List<UserGroup> userGroups = new List<UserGroup>();
             userGroups = await UserRepository.GetAllUserGroupsForUser(username: req.Query["username"]);
-            List<string> groups = new List<string>();
-            foreach (UserGroup ug in userGroups){
-                groups.Add(ug.Group);
-            }
-            return new OkObjectResult(groups);
+            return new OkObjectResult(userGroups);
         }
     }
 }

@@ -16,8 +16,16 @@ namespace chat.Models
             Group = group;
         }
 
+        public UserGroup(string username, string group, string chatName):base(username, group)
+        {
+            Username = username;
+            Group = group;
+            ChatName = chatName;
+        }
+
         public string Username {get; set;}
-        public string Group {get;set;}
+        public string Group {get; set;}
+        public string ChatName {get; set;}
 
     }
 }

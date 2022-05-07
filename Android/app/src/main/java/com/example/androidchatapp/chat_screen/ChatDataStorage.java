@@ -16,6 +16,8 @@ public class ChatDataStorage {
     public static ArrayList<Message> messages = new ArrayList<>();
 
     public static void fillData(final Context context, final chatAdapter adapter, String chatName){
+        if (chatName.equals(""))
+            return;
         MessagesDataSource msgDataSource = new MessagesDataSource(context);
 
         msgDataSource.open();
@@ -31,10 +33,10 @@ public class ChatDataStorage {
 
     public static void addMessage(Context context, final PubSubData data, chatAdapter adapter){
 
-        Log.e("a", ChatService.chatName);
+        Log.e("a", ChatService.chat.toString());
         Log.e("a", data.group);
 
-        if (ChatService.chatName.equals(data.group)){
+        if (ChatService.chat.group.equals(data.group)){
             messages.add(data.data);
             adapter.notifyDataSetChanged();
         } else{

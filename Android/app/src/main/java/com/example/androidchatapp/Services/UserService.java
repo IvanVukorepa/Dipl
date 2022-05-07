@@ -12,6 +12,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.androidchatapp.Models.UserGroup;
 import com.example.androidchatapp.R;
 import com.example.androidchatapp.login_screen.LoginActivity;
 import com.example.androidchatapp.chat_screen.ChatActivity;
@@ -125,8 +126,15 @@ public class UserService {
 
                 Gson gson = new Gson();
                 Type type = new TypeToken<List<String>>(){}.getType();
-                ChatListDataStorage.chats = gson.fromJson(response.toString(), type);
-                Log.e("UserService", ChatListDataStorage.chats.toString());
+                ArrayList<String> users = gson.fromJson(response.toString(), type);
+                ArrayList<UserGroup> userGroups = new ArrayList<>();
+                for (String u:users) {
+                    String group = getGroupName(AuthTokenService.getPayloadData("username"), u);
+                    UserGroup ug = new UserGroup(AuthTokenService.getPayloadData("username"), group, u);
+                    userGroups.add(ug);
+                }
+
+                ChatListDataStorage.chats = userGroups;
 
                 adapter.notifyDataSetChanged();
             }
@@ -138,5 +146,15 @@ public class UserService {
         });
 
         Volley.newRequestQueue(context).add(getGroups);
+    }
+
+    private static String getGroupName(String username1, String username2){
+        String name = "";
+        if (username1.compareTo(username2) < 0){
+            name = username1 + "_" + username2;
+        } else{
+            name = username2 + "_" + username1;
+        }
+        return name;
     }
 }

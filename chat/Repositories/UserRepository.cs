@@ -11,14 +11,14 @@ namespace chat.Repositories
 {
     public class UserRepository
     {
-        public static void AddGroupToUser(string username, string group){
+        public static void AddGroupToUser(string username, string group, string chatName){
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
             CloudTable table = tableClient.GetTableReference("ChatTable");
             table.CreateIfNotExistsAsync().Wait();
 
-            UserGroup userGroup = new UserGroup(username, group);
+            UserGroup userGroup = new UserGroup(username, group, chatName);
             Console.WriteLine(userGroup.Username);
             Console.WriteLine(userGroup.Group);
             table.ExecuteAsync(TableOperation.InsertOrMerge(userGroup)).Wait();

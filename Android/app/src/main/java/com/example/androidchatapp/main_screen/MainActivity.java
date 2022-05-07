@@ -38,11 +38,11 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String chatName = ChatListDataStorage.chats.get(i);
-                ChatService.chatName = chatName;
+                //String chatName = ChatListDataStorage.chats.get(i);
+                //ChatService.chatName = chatName;
                 //add chatname to intent and set it in next activity, on destroy remove name and clear datastorage
                 Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                intent.putExtra("chatName", chatName);
+                intent.putExtra("userGroupPosition", i);
                 startActivity(intent);
             }
         });
@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "query submit", Toast.LENGTH_SHORT).show();
 
                 UserService.getAll(getApplicationContext(), adapter, s);
+                ChatService.checkIfNewChat = true;
                 return false;
             }
 
@@ -85,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
                 // filter existing chats
 
                 adapter.getFilter().filter(s);
+                ChatService.checkIfNewChat = false;
+
                 return false;
             }
         });

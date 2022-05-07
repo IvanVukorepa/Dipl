@@ -2,6 +2,7 @@ package com.example.androidchatapp.Services;
 
 import android.app.Notification;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
@@ -14,6 +15,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.androidchatapp.Models.UserGroup;
 import com.example.androidchatapp.R;
 import com.example.androidchatapp.chat_screen.ChatDataStorage;
 import com.example.androidchatapp.main_screen.ChatListDataStorage;
@@ -21,14 +23,19 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class ChatService {
 
-    public static String chatName = "";
+    public static UserGroup chat;
+    public static boolean checkIfNewChat = false;
     public static int notificationId = 0;
 
     public static void rejoinGroups(final Context context, final String username){
@@ -56,10 +63,14 @@ public class ChatService {
                 Log.i("blabla", response.toString());
 
                 Gson gson = new Gson();
-                Type type = new TypeToken<List<String>>(){}.getType();
-                ChatListDataStorage.chats = gson.fromJson(response.toString(), type);
-                ChatListDataStorage.allChats = ChatListDataStorage.chats;
-
+                Type type = new TypeToken<List<UserGroup>>(){}.getType();
+                ChatListDataStorage.allChats = gson.fromJson(response.toString(), type);
+                ChatListDataStorage.chats = ChatListDataStorage.allChats;
+                for (UserGroup ug:ChatListDataStorage.allChats) {
+                    //Log.e("getAll", ug.chatName);
+                    Log.e("getAll", ug.group);
+                    Log.e("getAll", ug.username);
+                }
                 adapter.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {
@@ -70,6 +81,33 @@ public class ChatService {
         });
 
         Volley.newRequestQueue(context).add(getGroups);
+    }
+
+    public static void createChatIfNotExists(final Context context, String username1, String username2){
+
+        if (ChatService.checkIfNewChat && !ChatListDataStorage.allChats.contains(ChatService.chat)){
+            JSONObject test = new JSONObject();
+            JSONObject data = new JSONObject();
+
+            try {
+                test.put("type", "event");
+                test.put("event", "createChat");
+                //test.put("ackId", 1);
+                test.put("dataType", "json");
+                data.put("username1",  username1);
+                data.put("username2", username2);
+                test.put("data", data);
+            } catch(JSONException e){
+                Log.e("JSONException", e.toString());
+            }
+
+            Intent serviceIntent = new Intent(context, TestService.class);
+            serviceIntent.putExtra("message", test.toString());
+            Log.e("service", "intent start service WebPubSubConService");
+            context.startService(serviceIntent);
+
+            ChatListDataStorage.allChats.add(ChatService.chat);
+        }
     }
 
     public static void showNotification(Context context){

@@ -44,8 +44,7 @@ namespace Company.Function
             string messageDatajson = JsonConvert.SerializeObject(messageData);
 
             //await actions.AddAsync(WebPubSubAction.CreateSendToAllAction(request.Data, dataType));
-            await actions.AddAsync(WebPubSubAction.CreateSendToGroupAction(group, messageDatajson, WebPubSubDataType.Json));
-            
+            await actions.AddAsync(WebPubSubAction.CreateSendToGroupAction(group, messageDatajson, WebPubSubDataType.Json));  
             
         }
     }
