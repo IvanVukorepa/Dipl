@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class ChatListDataStorage {
 
     public static ArrayList<String> chats = new ArrayList<>();
+    public static ArrayList<String> allChats = new ArrayList<>();
 
     public static void fillData(final Context context, final ChatsListAdapter adapter){
         ChatService.getAllGroupsForUser(context, AuthTokenService.getPayloadData("username"), adapter);

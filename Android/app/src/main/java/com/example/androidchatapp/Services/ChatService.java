@@ -15,6 +15,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.androidchatapp.R;
+import com.example.androidchatapp.chat_screen.ChatDataStorage;
 import com.example.androidchatapp.main_screen.ChatListDataStorage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -57,6 +58,7 @@ public class ChatService {
                 Gson gson = new Gson();
                 Type type = new TypeToken<List<String>>(){}.getType();
                 ChatListDataStorage.chats = gson.fromJson(response.toString(), type);
+                ChatListDataStorage.allChats = ChatListDataStorage.chats;
 
                 adapter.notifyDataSetChanged();
             }

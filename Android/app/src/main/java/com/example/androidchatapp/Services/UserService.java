@@ -9,15 +9,27 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.androidchatapp.R;
 import com.example.androidchatapp.login_screen.LoginActivity;
 import com.example.androidchatapp.chat_screen.ChatActivity;
+import com.example.androidchatapp.main_screen.ChatListDataStorage;
+import com.example.androidchatapp.main_screen.ChatsListAdapter;
 import com.example.androidchatapp.main_screen.MainActivity;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.StatementEvent;
 
 public class UserService {
 
@@ -96,5 +108,35 @@ public class UserService {
         };
 
         Volley.newRequestQueue(context).add(registerUser);
+    }
+
+    public static void getAll(final Context context, final ChatsListAdapter adapter, final String filter){
+
+        if (filter.equals("")){
+            Toast.makeText(context, "Filter can't be empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final String url = context.getApplicationContext().getString(R.string.UsersServiceBaseURL) + context.getApplicationContext().getString(R.string.getAllUsers) + "?filter=" + filter;
+        JsonArrayRequest getGroups = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                Log.i("blabla", response.toString());
+
+                Gson gson = new Gson();
+                Type type = new TypeToken<List<String>>(){}.getType();
+                ChatListDataStorage.chats = gson.fromJson(response.toString(), type);
+                Log.e("UserService", ChatListDataStorage.chats.toString());
+
+                adapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, "Error retrieving data from server", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        Volley.newRequestQueue(context).add(getGroups);
     }
 }

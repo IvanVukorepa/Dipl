@@ -24,4 +24,7 @@
     <string name="rejoin">api/rejoinGroups</string>
     <string name="getAllGroupsUser">api/getAllGroupsUser</string>
 
+
+    <string name="getAllUsers">api/getAllFiltered</string>
+
 </resources>

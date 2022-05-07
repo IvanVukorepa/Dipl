@@ -7,13 +7,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.androidchatapp.R;
 import com.squareup.picasso.Picasso;
 
-public class ChatsListAdapter extends BaseAdapter {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class ChatsListAdapter extends BaseAdapter implements Filterable {
     @Override
     public int getCount() {
         return ChatListDataStorage.chats.size();
@@ -52,5 +59,41 @@ public class ChatsListAdapter extends BaseAdapter {
         //Picasso.get().load(myContext.getString(R.string.baseURL) + sport.getImageUrl()).into(imageTmb);
 
         return view;
+    }
+
+    @Override
+    public Filter getFilter() {
+        Filter filter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                FilterResults results = new FilterResults();
+                ArrayList<String> filteredChats = new ArrayList<>();
+
+                String stringToCheck = charSequence.toString().toLowerCase();
+
+
+                for (String s: ChatListDataStorage.allChats) {
+                    if (s.toLowerCase().startsWith(stringToCheck)){
+                        filteredChats.add(s);
+                    }
+                }
+
+                results.count = filteredChats.size();
+                results.values = filteredChats;
+
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                if (charSequence.equals("")){
+                    ChatListDataStorage.chats = ChatListDataStorage.allChats;
+                } else {
+                    ChatListDataStorage.chats = (ArrayList<String>) filterResults.values;
+                }
+                notifyDataSetChanged();
+            }
+        };
+        return filter;
     }
 }

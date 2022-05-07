@@ -4,15 +4,22 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.example.androidchatapp.R;
 import com.example.androidchatapp.Services.AuthTokenService;
 import com.example.androidchatapp.Services.ChatService;
 import com.example.androidchatapp.Services.TestService;
+import com.example.androidchatapp.Services.UserService;
 import com.example.androidchatapp.chat_screen.ChatActivity;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,5 +57,38 @@ public class MainActivity extends AppCompatActivity {
         serviceIntent.putExtra("message", "");
         Log.e("service", "intent start service WebPubSubConService");
         startService(serviceIntent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setQueryHint("Search");
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                //Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+                //request all possible chats from DB
+                Toast.makeText(getApplicationContext(), "query submit", Toast.LENGTH_SHORT).show();
+
+                UserService.getAll(getApplicationContext(), adapter, s);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                //Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+                // filter existing chats
+
+                adapter.getFilter().filter(s);
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
     }
 }
