@@ -21,7 +21,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.androidchatapp.DB.GroupsDataSource;
 import com.example.androidchatapp.DB.MessagesDataSource;
+import com.example.androidchatapp.Models.Group;
 import com.example.androidchatapp.Models.UserGroup;
 import com.example.androidchatapp.R;
 import com.example.androidchatapp.main_screen.ChatListDataStorage;
@@ -39,6 +41,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -229,7 +232,12 @@ public class TestService extends Service {
 
         MessagesDataSource msgDataSource = new MessagesDataSource(context);
         msgDataSource.open();
-        msgDataSource.addMessageToDB(data.data.user, data.group, data.data.message);
+        msgDataSource.addMessageToDB(getUsername(context), data.data.user, data.group, data.data.message);
         msgDataSource.close();
+
+        GroupsDataSource groupsDataSource = new GroupsDataSource(context);
+        groupsDataSource.open();
+        groupsDataSource.updateGroupData(getUsername(context), data.group, data.data.time);
+        groupsDataSource.close();
     }
 }

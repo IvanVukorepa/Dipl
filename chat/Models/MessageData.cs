@@ -10,11 +10,13 @@ namespace chat.Models
     {
         public string User { get; set; }
         public string Message { get; set; }
+        public DateTime time { get; set; }
 
         public MessageData(string user, string message)
         {
             User = user;
             Message = message;
+            time =  DateTime.Now;
         }
     }
 }

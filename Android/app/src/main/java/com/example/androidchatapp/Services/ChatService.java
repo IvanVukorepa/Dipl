@@ -19,6 +19,7 @@ import com.example.androidchatapp.Models.UserGroup;
 import com.example.androidchatapp.R;
 import com.example.androidchatapp.chat_screen.ChatDataStorage;
 import com.example.androidchatapp.main_screen.ChatListDataStorage;
+import com.example.androidchatapp.main_screen.ChatsListAdapter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -55,7 +56,7 @@ public class ChatService {
         Volley.newRequestQueue(context).add(request);
     }
 
-    public static void getAllGroupsForUser(final Context context, final String username, final BaseAdapter adapter){
+    public static void getAllGroupsForUser(final Context context, final String username, final ChatsListAdapter adapter){
         final String url = context.getApplicationContext().getString(R.string.ChatServiceBaseURL) + context.getApplicationContext().getString(R.string.getAllGroupsUser) + "?username=" + username;
         JsonArrayRequest getGroups = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
@@ -71,6 +72,7 @@ public class ChatService {
                     Log.e("getAll", ug.group);
                     Log.e("getAll", ug.username);
                 }
+                ChatListDataStorage.sortGroups(context, adapter);
                 adapter.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {

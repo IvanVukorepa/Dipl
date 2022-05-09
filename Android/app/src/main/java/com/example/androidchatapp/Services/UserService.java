@@ -127,11 +127,14 @@ public class UserService {
                 Gson gson = new Gson();
                 Type type = new TypeToken<List<String>>(){}.getType();
                 ArrayList<String> users = gson.fromJson(response.toString(), type);
+
                 ArrayList<UserGroup> userGroups = new ArrayList<>();
                 for (String u:users) {
-                    String group = getGroupName(AuthTokenService.getPayloadData("username"), u);
-                    UserGroup ug = new UserGroup(AuthTokenService.getPayloadData("username"), group, u);
-                    userGroups.add(ug);
+                    if (u != null){
+                        String group = getGroupName(AuthTokenService.getPayloadData("username"), u);
+                        UserGroup ug = new UserGroup(AuthTokenService.getPayloadData("username"), group, u);
+                        userGroups.add(ug);
+                    }
                 }
 
                 ChatListDataStorage.chats = userGroups;

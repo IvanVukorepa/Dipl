@@ -28,29 +28,30 @@ public class MessagesDataSource {
         database.close();
     }
 
-    public void addMessageToDB(String user, String group, String content){
+    public void addMessageToDB(String user, String username, String group, String content){
         ContentValues values = new ContentValues();
 
+        values.put("user", user);
         values.put("chatName", group);
-        values.put("username", user);
+        values.put("username", username);
         values.put("messageContent", content);
 
         database.insert("Messages", null, values);
     }
 
-    public ArrayList<MessageDatabse> getAllMessagesForChat(String chatName){
+    public ArrayList<MessageDatabse> getAllMessagesForChat(String user, String chatName){
         ArrayList<MessageDatabse> messages = new ArrayList<>();
 
-        Cursor cursor = database.rawQuery("select * from messages where chatName=" + "\"" + chatName + "\"", null);
+        Cursor cursor = database.rawQuery("select * from messages where user=" + "\"" + user + "\" and" +" chatName=" + "\"" + chatName + "\"", null);
         cursor.moveToFirst();
 
         while (!cursor.isAfterLast()){
             MessageDatabse message = new MessageDatabse();
 
             message.setId(cursor.getInt(0));
-            message.setChatName(cursor.getString(1));
-            message.setUsername(cursor.getString(2));
-            message.setMessageContent(cursor.getString(3));
+            message.setChatName(cursor.getString(2));
+            message.setUsername(cursor.getString(3));
+            message.setMessageContent(cursor.getString(4));
             messages.add(message);
             cursor.moveToNext();
         }
