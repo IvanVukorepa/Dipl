@@ -20,7 +20,8 @@ public class DBHelper extends SQLiteOpenHelper {
             + "(_id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "userName TEXT NOT NULL,"
             + "groupName TEXT NOT NULL,"
-            + "datetime TEXT NOT NULL)";
+            + "datetime TEXT NOT NULL,"
+            + "guid TEXT NOT NULL)";
 
     public DBHelper(Context context){
         super(context, "messagesDatabase.db", null, DATABASE_VERSION);

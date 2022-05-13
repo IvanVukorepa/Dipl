@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.androidchatapp.Models.Group;
 import com.example.androidchatapp.Services.Message;
@@ -58,12 +59,13 @@ public class GroupsDataSource {
         return groups;
     }
 
-    public void updateGroupData(String username, String group, String time){
+    public void updateGroupData(String username, String group, String time, String guid){
         ContentValues values = new ContentValues();
 
         values.put("userName", username);
         values.put("groupName", group);
         values.put("datetime", time);
+        values.put("guid", guid);
         String[] columns = new String[]{"groupName"};
         String[] whereArgs = new String[]{group, username};
         Cursor cursor = database.query("Groups", columns, "groupName = ? and userName = ?", whereArgs, null, null, "groupName");
@@ -73,5 +75,27 @@ public class GroupsDataSource {
             database.insert("Groups", null, values);
         }
         cursor.close();
+    }
+
+    public Group getGroupData(String group, String username){
+        String[] columns = new String[]{"_id", "userName", "groupName", "datetime", "guid"};
+        String[] whereArgs = new String[]{group, username};
+        Cursor cursor = database.query("Groups", columns, "groupName = ? and userName = ?", whereArgs, null, null, "groupName");
+
+        if (cursor.getCount() != 1)
+            return null;
+
+        cursor.moveToFirst();
+        Group response = new Group();
+
+        response.setId(cursor.getInt(0));
+        response.setUserName(cursor.getString(1));
+        response.setGroupName(cursor.getString(2));
+        response.setDate(cursor.getString(3));
+        response.setGuid(cursor.getString(4));
+
+        cursor.close();
+
+        return response;
     }
 }

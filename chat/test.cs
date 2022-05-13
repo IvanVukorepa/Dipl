@@ -13,6 +13,8 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using chat.Models;
 using Newtonsoft.Json.Linq;
+using Azure.Messaging.WebPubSub;
+using chat.Repositories;
 
 namespace Company.Function
 {
@@ -26,10 +28,10 @@ namespace Company.Function
         {
             Console.WriteLine("testevent");
             String receivedData = request.Data.ToString();
-            String[] receivedDataArr = receivedData.Split('[',']');
+            String[] receivedDataArr = receivedData.Split('[', ']');
 
             Console.WriteLine(receivedData);
-            if (receivedDataArr.Length < 3 )
+            if (receivedDataArr.Length < 3)
             {
                 //return some error
                 return;
@@ -44,8 +46,24 @@ namespace Company.Function
             string messageDatajson = JsonConvert.SerializeObject(messageData);
 
             //await actions.AddAsync(WebPubSubAction.CreateSendToAllAction(request.Data, dataType));
-            await actions.AddAsync(WebPubSubAction.CreateSendToGroupAction(group, messageDatajson, WebPubSubDataType.Json));  
-            
+            await actions.AddAsync(WebPubSubAction.CreateSendToGroupAction(group, messageDatajson, WebPubSubDataType.Json));
+
+            WebPubSubServiceClient client =
+                new WebPubSubServiceClient(Environment.GetEnvironmentVariable("WebPubSubConnectionString"), Environment.GetEnvironmentVariable("WebPubSubHub"));
+
+
+            List<UserGroup> userGroups = await UserRepository.getAllUsersInGroup(group);
+
+            foreach(UserGroup userGroup in userGroups)
+            {
+                if (userGroup.Username != userId)
+                {
+                    UserRepository.saveMessage(userGroup, messageDatajson);
+                }
+                else{
+                    // remove messages?
+                }
+            }
         }
     }
 }

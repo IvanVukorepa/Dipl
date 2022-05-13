@@ -16,16 +16,32 @@ namespace chat.Models
             Group = group;
         }
 
-        public UserGroup(string username, string group, string chatName):base(username, group)
+        public UserGroup(string username, string group, string chatName) : base(username, group)
         {
             Username = username;
             Group = group;
             ChatName = chatName;
         }
 
+        public UserGroup(string username, string group, string chatName, string message):base(username, group)
+        {
+            Username = username;
+            Group = group;
+            ChatName = chatName;
+            Message = message;
+        }
+        public UserGroup(UserGroup userGroup):base(userGroup.Username, userGroup.Group)
+        {
+            Username = userGroup.Username;
+            Group = userGroup.Group;
+            ChatName = userGroup.ChatName;
+            Message = userGroup.Message;
+        }
+
         public string Username {get; set;}
         public string Group {get; set;}
         public string ChatName {get; set;}
+        public string Message { get; set; }
 
     }
 }

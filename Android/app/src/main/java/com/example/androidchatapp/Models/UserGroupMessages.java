@@ -3,23 +3,24 @@ package com.example.androidchatapp.Models;
 import com.example.androidchatapp.Services.Message;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class UserGroup {
-
+public class UserGroupMessages {
     public String username;
     public String group;
     public String chatName;
+    public String message;
 
-    public UserGroup(String Username, String Group, String ChatName){
+    public UserGroupMessages(String Username, String Group, String ChatName){
         username = Username;
         group = Group;
         chatName = ChatName;
+        //message = new ArrayList<>();
     }
 
-    public UserGroup(){
+    public UserGroupMessages(){
         username="";
         group="";
         chatName="";
+        //message = new ArrayList<>();
     }
 }

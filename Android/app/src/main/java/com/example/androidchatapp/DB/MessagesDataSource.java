@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.androidchatapp.Services.Message;
 
@@ -35,7 +36,7 @@ public class MessagesDataSource {
         values.put("chatName", group);
         values.put("username", username);
         values.put("messageContent", content);
-
+        Log.e("addmessage", "adding " + content + " to db");
         database.insert("Messages", null, values);
     }
 

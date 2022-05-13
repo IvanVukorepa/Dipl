@@ -37,7 +37,10 @@ public class AuthTokenService {
     }
 
     public static String getPayloadData(String name){
-        return AuthTokenService.payloadJson.optString(name, "failureToGet" + name);
+        if (AuthTokenService.payloadJson != null)
+            return AuthTokenService.payloadJson.optString(name, "failureToGet" + name);
+        else
+            return "";
     }
 
     public static void setToken(String token){

@@ -6,6 +6,7 @@ public class Group {
     private String groupName;
     private String userName;
     private String date;
+    private String guid;
 
     public int getId() {
         return id;
@@ -21,6 +22,14 @@ public class Group {
 
     public String getUserName() {
         return userName;
+    }
+
+    public String getGuid() {
+        return guid;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
     }
 
     public void setId(int id) {
