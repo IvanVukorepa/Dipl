@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.androidchatapp.DB.MessageDatabse;
 import com.example.androidchatapp.DB.MessagesDataSource;
+import com.example.androidchatapp.Services.AuthTokenService;
 import com.example.androidchatapp.Services.ChatService;
 import com.example.androidchatapp.Services.Message;
 import com.example.androidchatapp.Services.PubSubData;
@@ -21,7 +22,7 @@ public class ChatDataStorage {
         MessagesDataSource msgDataSource = new MessagesDataSource(context);
 
         msgDataSource.open();
-        ArrayList<MessageDatabse> messagesDB = msgDataSource.getAllMessagesForChat(chatName);
+        ArrayList<MessageDatabse> messagesDB = msgDataSource.getAllMessagesForChat(AuthTokenService.getPayloadData("username"), chatName);
         msgDataSource.close();
 
         for (MessageDatabse m: messagesDB) {

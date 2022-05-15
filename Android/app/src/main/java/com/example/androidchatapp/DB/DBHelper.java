@@ -11,9 +11,17 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_CREATE="create table Messages"
             + "(_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + "user TEXT NOT NULL,"
             + "chatName TEXT NOT NULL,"
             + "username TEXT NOT NULL,"
             + "messageContent TEXT NOT NULL)";
+
+    private static final String GROUPS_TABLE="create table Groups"
+            + "(_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + "userName TEXT NOT NULL,"
+            + "groupName TEXT NOT NULL,"
+            + "datetime TEXT NOT NULL,"
+            + "guid TEXT NOT NULL)";
 
     public DBHelper(Context context){
         super(context, "messagesDatabase.db", null, DATABASE_VERSION);
@@ -22,6 +30,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(DATABASE_CREATE);
+        sqLiteDatabase.execSQL(GROUPS_TABLE);
     }
 
     @Override

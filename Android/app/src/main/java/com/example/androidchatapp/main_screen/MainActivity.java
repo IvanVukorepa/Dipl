@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.example.androidchatapp.DB.GroupsDataSource;
 import com.example.androidchatapp.Models.UserGroup;
 import com.example.androidchatapp.R;
 import com.example.androidchatapp.Services.AuthTokenService;
@@ -67,9 +68,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        EventBus.getDefault().register(this);
 
-        ChatListDataStorage.fillData(getApplicationContext(), adapter);
         listView.setAdapter(adapter);
+        ChatListDataStorage.fillData(getApplicationContext(), adapter);
     }
 
     @Override
@@ -109,13 +111,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResumeFragments() {
-        super.onResumeFragments();
-        EventBus.getDefault().register(this);
-    }
-
-
-    @Override
     protected void onPause() {
         super.onPause();
         EventBus.getDefault().unregister(this);
@@ -129,6 +124,11 @@ public class MainActivity extends AppCompatActivity {
             UserGroup ug = new UserGroup(AuthTokenService.getPayloadData("username"), data.group, data.data.user);
             ChatListDataStorage.allChats.add(ug);
             adapter.notifyDataSetChanged();
+
+            GroupsDataSource groupsDataSource = new GroupsDataSource(getApplicationContext());
+            groupsDataSource.open();
+            groupsDataSource.addGroupToDB(data.group, AuthTokenService.getPayloadData("username"), data.data.time);
+            groupsDataSource.close();
         }
         ChatService.showNotification(getApplicationContext());
     }
