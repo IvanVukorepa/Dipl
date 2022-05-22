@@ -49,7 +49,7 @@ public class ChatService {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("error", "failed to rejoin groups");
+                Log.e("error", "failed to rejoin groups due to " + error.toString());
             }
         });
 
